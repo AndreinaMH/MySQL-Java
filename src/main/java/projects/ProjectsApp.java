@@ -116,12 +116,9 @@ return input.isBlank() ? null : input.trim();
 }
 
 private void printOperations() {
-	System.out.println ("\nThese are the available selections. Press the enter key to continue");
-		try {
-			System.in.read();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+	System.out.println ("\nThese are the available selections");
+		
 		operations.forEach(line -> System.out.println(" "+ line));
 	}
 }
+
