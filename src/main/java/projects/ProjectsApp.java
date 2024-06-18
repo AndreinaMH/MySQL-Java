@@ -11,25 +11,32 @@ import projects.service.ProjectService;
 public class ProjectsApp {
    private final Scanner scanner = new Scanner (System.in);
    private final ProjectService projectService = new ProjectService ();
+//AS PART OF WEEK 10 WE ADDED THE LINE BELOW: private Project curProject;
+   private Project curProject;
+   
 
 //@formatter:off
 private final List <String> operations = List.of (
-"1) Add a project");
+"1) Add a project",
+// week 10 we added the lines below: LIST PROJECTS AND SELECT A PROJECT.
+"2) List projects",
+"3) Select a project"
+);
+// On week 9 our main task was to add a project to the database. This  week w will add 2 options, list projects,
+// that we can list a project in the database, and select a project. 
 
 public static void main (String[] args) {
 new ProjectsApp ().processUserSelections();
 }
 
 private void processUserSelections() {
-boolean done= false;
-
-///Type
+boolean done = false;
 
 while (!done){
     try {
         int selection = getUserSelection();
 
-       switch (selection) {
+        switch (selection) {
            case -1:
               done = exitMenu();
               break;
@@ -37,17 +44,49 @@ while (!done){
        case 1:
             createProject();
             break;
-
+            
+// WEEK 10: We are also adding case 2 and case 3.
+            
+       case 2: 
+    	   listProjects();
+    	   break;
+    	   
+       case 3: 
+    	   selectProjects();
+           break;
+       
        default:
-         System.out.println ("\n" + selection + "is not a valid selection. Try again. ");
-       break;
-}
-
-} catch (Exception e) {
-System.out.println ("\nError: " + e + " Try again.");
-}
-}
-}
+    	   System.out.println("\n" + selection + " is not a valid selection.");
+    	   break;
+       }
+        
+    } catch (Exception e) {
+    	System.out.println ("\nError: " + e + "Try again.");
+    }
+    }
+}       
+// This code below was also added on week 10. Related all to listing and selecting projects. 
+    	
+    	private void selectProjects () {
+    		listProjects();
+    		Integer projectId = getIntInput ("Enter a project ID to select a project");
+    		
+    		curProject = null;
+    		
+    		curProject = projectService.fetchProjectById(projectId);
+    	}
+    	
+    	private void listProjects(){
+    		List<Project> projects = projectService.fetchAllProjects();
+    		
+    		
+    		System.out.println("\nProjects: ");
+    		
+    		for(Project project : projects) {
+    			System.out.println(project.getProjectId() + ":" + project.getProjectName());
+    		}
+    	}
+    	
 private void createProject() {
  String projectName = getStringInput ("Enter the project name: ");
  BigDecimal estimatedHours = getDecimalInput ("Enter the estimated hours: ");
@@ -116,9 +155,15 @@ return input.isBlank() ? null : input.trim();
 }
 
 private void printOperations() {
-	System.out.println ("\nThese are the available selections");
+			System.out.println ("\nThese are the available selections");
+				
+				operations.forEach(line -> System.out.println(" "+ line));
 		
-		operations.forEach(line -> System.out.println(" "+ line));
+				if (Objects.isNull(curProject)) {
+					System.out.println("\nYou are not working with a project");
+				} else {
+					System.out.println ("\nYou are working with project: " + curProject.getProjectName());
+				}
 	}
+	    
 }
-
